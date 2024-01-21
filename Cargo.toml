@@ -1,0 +1,22 @@
+[lib]
+name = "clop"
+path = "src/clop.rs"
+
+[package]
+name = "clop"
+version = "0.0.0"
+description = "A super minimal command line option parser"
+repository = "https://github.com/wick3dr0se/clop"
+license = "GPL3"
+categories = ["command-line-interface"]
+keywords = [
+  "argument",
+  "arg",
+  "cli",
+  "parser",
+  "parse"
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
