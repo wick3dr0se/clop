@@ -1,8 +1,8 @@
 use std::env;
 
 pub struct Opts {
-    long: Vec<(String, Option<String>)>,
-    short: Vec<(char, Option<String>)>,
+    pub long: Vec<(String, Option<String>)>,
+    pub short: Vec<(char, Option<String>)>,
 }
 
 pub fn get_opts() -> Opts {
