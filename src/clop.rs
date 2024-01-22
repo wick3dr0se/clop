@@ -2,13 +2,13 @@ use std::env;
 
 pub struct Opts {
     pub long: Vec<(String, Option<String>)>,
-    pub short: Vec<(String, Option<String>)>,
+    pub short: Vec<(String, Option<String>)>
 }
 
 pub fn get_opts() -> Opts {
     let mut options = Opts {
         long: vec![],
-        short: vec![],
+        short: vec![]
     };
     let args: Vec<String> = env::args().collect();
     let mut iter = args.iter().skip(1);
@@ -44,4 +44,21 @@ pub fn get_opts() -> Opts {
     }
 
     options
+}
+
+impl Opts {
+    pub fn has(&self, options: &[&str], argument: Option<&str>) -> bool {
+        for option in options {
+            if option.len() > 1 {
+                if self.long.iter().any(|(o, a)| o == option && a.as_deref() == argument) {
+                    return true;
+                }
+            } else {
+                if self.short.iter().any(|(o, a)| o == option && a.as_deref() == argument) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
