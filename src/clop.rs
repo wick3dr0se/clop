@@ -12,12 +12,12 @@ impl Opts {
             // long option; we don't specifiy multiple character short options (-ab)
             if option.len() > 1 {
                 for (o, a) in &self.long {
-                    if o == option && a.is_some() && argument.is_none() {
+                    if o == option && argument.is_none() {
                         // remove long option from scrap
                         self.scrap.retain(|s| *s != format!("--{}", o));
                         return true;
                     }
-                    else if o == option && a.as_deref() == argument {
+                    else if o == option && a.is_some() && a.as_deref() == argument {
                         // remove long option and argument from scrap
                         self.scrap.retain(|s| *s != format!("--{}", o) && *s != a.clone().unwrap());
                         return true;
@@ -26,12 +26,12 @@ impl Opts {
             // short options
             } else {
                 for (o, a) in &self.short {
-                    if o == option && a.is_some() && argument.is_none() {
+                    if o == option && argument.is_none() {
                         // remove short option from scrap
                         self.scrap.retain(|s| *s != format!("-{}", o));
                         return true;
                     }
-                    else if o == option && a.as_deref() == argument {
+                    else if o == option && a.is_some() && a.as_deref() == argument {
                         // remove short option and argument from scrap
                         self.scrap.retain(|s| *s != format!("-{}", o) && *s != a.clone().unwrap());
                         return true;
