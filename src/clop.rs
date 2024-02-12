@@ -1,3 +1,4 @@
+use std::io;
 use std::env;
 
 pub struct Opts {
@@ -7,39 +8,46 @@ pub struct Opts {
 }
 
 impl Opts {
-    pub fn has(&mut self, options: &[&str], argument: Option<&str>) -> bool {
+    pub fn has(&mut self, options: &[&str], arg: bool) -> io::Result<String> {
         for option in options {
             // long option; we don't specifiy multiple character short options (-ab)
             if option.len() > 1 {
                 for (o, a) in &self.long {
-                    if o == option && argument.is_none() {
+                    if o == option && a.is_some() && arg {
+                        // remove long option and arg from scrap
+                        self.scrap.retain(|s| *s != format!("--{}", o) && *s != a.clone().unwrap());
+                        return Ok(a.clone().unwrap())
+                    } else if o == option {
                         // remove long option from scrap
                         self.scrap.retain(|s| *s != format!("--{}", o));
-                        return true;
-                    }
-                    else if o == option && a.is_some() && a.as_deref() == argument {
-                        // remove long option and argument from scrap
-                        self.scrap.retain(|s| *s != format!("--{}", o) && *s != a.clone().unwrap());
-                        return true;
+                        
+                        if arg {
+                            return Err(io::Error::new(io::ErrorKind::Other, ""))
+                        }
+                        return Ok(String::new())
                     }
                 }
             // short options
             } else {
                 for (o, a) in &self.short {
-                    if o == option && argument.is_none() {
+                    if o == option && a.is_some() && arg {
+                        // remove short option and arg from scrap
+                        self.scrap.retain(|s| *s != format!("-{}", o) && *s != a.clone().unwrap());
+                        return Ok(a.clone().unwrap())
+                    } else if o == option {
                         // remove short option from scrap
                         self.scrap.retain(|s| *s != format!("-{}", o));
-                        return true;
-                    }
-                    else if o == option && a.is_some() && a.as_deref() == argument {
-                        // remove short option and argument from scrap
-                        self.scrap.retain(|s| *s != format!("-{}", o) && *s != a.clone().unwrap());
-                        return true;
+                        
+                        if arg {
+                            return Err(io::Error::new(io::ErrorKind::Other, ""))
+                        }
+                        return Ok(String::new())
                     }
                 }
             }
         }
-        return false;
+
+        return Err(io::Error::new(io::ErrorKind::Other, ""))
     }
 }
 
@@ -49,7 +57,8 @@ pub fn get_opts() -> Opts {
         short: vec![],
         scrap: vec![]
     };
-    let args: Vec<String> = env::args().skip(1).collect(); // get command line arguments without program invocation
+    // get command line arguments without program invocation
+    let args: Vec<String> = env::args().skip(1).collect();
     options.scrap = args.clone(); // populate scrap (arguments) to be stripped of options
     let mut iter = args.iter().peekable();
 
