@@ -18,12 +18,12 @@ impl Opts {
                         self.scrap.retain(|s| *s != format!("--{}", o) && *s != a.clone().unwrap());
                         return Ok(a.clone().unwrap())
                     } else if o == option {
-                        // remove long option from scrap
-                        self.scrap.retain(|s| *s != format!("--{}", o));
-                        
                         if arg {
                             return Err(io::Error::new(io::ErrorKind::Other, ""))
                         }
+                        
+                        // remove long option from scrap
+                        self.scrap.retain(|s| *s != format!("--{}", o));
                         return Ok(String::new())
                     }
                 }
@@ -35,12 +35,12 @@ impl Opts {
                         self.scrap.retain(|s| *s != format!("-{}", o) && *s != a.clone().unwrap());
                         return Ok(a.clone().unwrap())
                     } else if o == option {
-                        // remove short option from scrap
-                        self.scrap.retain(|s| *s != format!("-{}", o));
-                        
                         if arg {
                             return Err(io::Error::new(io::ErrorKind::Other, ""))
                         }
+                        
+                        // remove short option from scrap
+                        self.scrap.retain(|s| *s != format!("-{}", o));
                         return Ok(String::new())
                     }
                 }
